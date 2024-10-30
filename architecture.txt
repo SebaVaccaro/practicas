@@ -1,0 +1,276 @@
+Esquema General de Funcionamiento de la Aplicación Web
+1. Registro y Autenticación de Usuarios
+Flujo de Registro:
+Front-end: El usuario llena un formulario de registro con username, password, email, publicData, y privateData.
+Back-end:
+    Servicio: createUserService
+    Acciones:
+        Validar datos.
+        Hash de la contraseña con bcrypt.
+        Guardar el nuevo usuario en la base de datos.
+    Respuesta: Confirmación de registro exitoso o error.
+
+
+Flujo de Inicio de Sesión:
+Front-end: El usuario llena un formulario de inicio de sesión con username y password.
+Back-end:
+    Servicio: loginUserService
+    Acciones:
+        Buscar al usuario por username.
+        Verificar la contraseña con bcrypt.
+        Generar y devolver un token de autenticación (JWT).
+    Respuesta: Token de autenticación o error.
+
+
+2. Gestión de Información de Usuario
+
+Cambio de Contraseña:
+Front-end: El usuario solicita un cambio de contraseña proporcionando la nueva contraseña.
+Back-end:
+    Servicio: changePasswordService
+    Acciones:
+        Hash de la nueva contraseña.
+        Actualizar la contraseña en la base de datos.
+Respuesta: Confirmación de cambio o error.
+
+Cambio de Email:
+Front-end: El usuario solicita un cambio de email proporcionando el nuevo email.
+Back-end:
+    Servicio: changeEmailService
+    Acciones:
+        Actualizar el email en la base de datos.
+        Respuesta: Confirmación de cambio o error.
+
+Gestión de Datos Públicos:
+Front-end: El usuario visualiza o edita sus datos públicos (nickname, age, gender, type).
+Back-end:
+    Servicios: getPublicDataService, changePublicDataService
+    Acciones:
+        Obtener o actualizar datos públicos en la base de datos.
+    Respuesta: Datos públicos o confirmación de cambio/error.
+
+Gestión de Datos Privados:
+Front-end: El usuario visualiza o edita sus datos privados (phonenumber).
+Back-end:
+    Servicios: getPrivateDataService, changePrivateDataService
+    Acciones:
+        Obtener o actualizar datos privados en la base de datos.
+    Respuesta: Datos privados o confirmación de cambio/error.
+
+
+3. Gestión de Publicaciones
+
+Creación de Publicación:
+Front-end: El usuario llena un formulario de nueva publicación con type, publicationData (ubicación, sharedRoom, mixed, pets).
+Back-end:
+    Servicio: createPublicationService
+    Acciones:
+        Validar datos.
+        Crear una nueva publicación en la base de datos.
+Respuesta: Confirmación de creación o error.
+
+Gestión de Publicaciones del Usuario:
+Front-end: El usuario puede agregar o eliminar sus publicaciones.
+Back-end:
+    Servicios: addUserPublicationService, deleteUserPublicationService
+    Acciones:
+    Agregar/eliminar referencia de publicación en el array publications del usuario.
+    Respuesta: Confirmación de acción o error.
+
+
+4. Interacciones con Publicaciones
+
+
+Enviar Solicitud:
+Front-end: El usuario envía una solicitud a una publicación.
+Back-end:
+    Servicios: addUserRequestService, addPublicationRequestService
+    Acciones:
+        Agregar referencia de solicitud en los arrays sentRequests del usuario y requests de la publicación.
+    Respuesta: Confirmación de solicitud o error.
+
+Eliminar Solicitud:
+Front-end: El usuario retira una solicitud enviada.
+Back-end:
+    Servicios: deleteUserRequestService, deletePublicationRequestService
+    Acciones:
+        Eliminar referencia de solicitud en los arrays sentRequests del usuario y requests de la publicación.
+    Respuesta: Confirmación de eliminación o error.
+
+Gestión de Matches:
+Front-end: El sistema o el usuario puede agregar o eliminar matches con publicaciones.
+Back-end:
+    Servicios: addUserMatchService, addPublicationMatchService, deleteUserMatchService, deletePublicationMatchService
+    Acciones:
+        Agregar/eliminar referencia de match en los arrays matches del usuario y la publicación.
+    Respuesta: Confirmación de acción o error.
+
+5. Estado de la Publicación
+
+Cambio de Estado:
+Front-end: El usuario cambia el estado de su publicación (e.g., activa, inactiva).
+Back-end:
+    Servicio: changePublicationStateService
+    Acciones:
+        Actualizar el estado de la publicación en la base de datos.
+    Respuesta: Confirmación de cambio o error.
+
+
+
+
+
+
+            ------------ ESQUEMA USUARIO ------------
+username: CONST {[create/login/data].user.service.js}
+password: PUT {changePassword.user.service.js}
+email: PUT {changeEmail.user.service.js}
+
+publicData: PUT {[get/change]PublicData.user.service.js}
+    nickname: String
+    age: String
+    gender: String
+    type: String
+
+privateData: PUT {[get/change]PrivateData.user.service.js}
+    phonenumber: String
+
+publications: ADD & DELETE {[add/delete]Publication.user.service.js}
+sentRequests: ADD & DELETE {[add/delete]Request.user.service.js}
+matches: ADD & DELETE {[add/delete]Matches.user.service.js}
+
+
+            ------------ ESQUEMA PUBLICACION ------------
+publicationId: CONST {[create/data].publication.service.js}
+createdBy: String
+type: String
+publicationData: PUT {changePublicationData.publication.service.js}
+    ubication: String
+    sharedRoom: Boolean
+    mixed: Boolean
+    pets: Boolean
+
+requests: ADD & DELETE {[add/delete]Request.publication.service.js}
+    - Lista de usuarios que han enviado solicitudes
+
+matches: ADD & DELETE {[add/delete]Match.publication.service.js}
+    - Lista de usuarios que han hecho match con la publicación
+
+publicationState: PUT {changeState.publication.service.js}
+    - Estado de la publicación (e.g., activa, inactiva)
+
+createdAt: Date
+    - Fecha de creación de la publicación
+
+
+
+
+
+
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+-----------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+-----------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ESQUEMA USUARIO
+username: Constante, no modificable.
+password: Método PUT para cambiar la contraseña.
+email: Método PUT para cambiar el correo electrónico.
+publicData: Método PUT para actualizar datos públicos como nickname, age, gender, type.
+privateData: Método PUT para actualizar datos privados como phonenumber.
+publications: Métodos ADD & DELETE para agregar y eliminar publicaciones.
+sentRequests: Métodos ADD & DELETE para agregar y eliminar solicitudes enviadas.
+matches: Métodos ADD & DELETE para agregar y eliminar coincidencias.
+------------------------------------------------------------------------------------------------------
+Explicación y Comentarios:
+------------------------------------------------------------------------------------------------------
+username: CONST
+- El nombre de usuario es constante y no puede ser cambiado.
+
+password: PUT {changePassword.user.service.js}
+- Método para cambiar la contraseña.
+
+email: PUT {changeEmail.user.service.js}
+- Método para cambiar la dirección de correo electrónico.
+
+publicData: PUT {changePublicData.user.service.js}
+- Métodos para actualizar los campos de datos públicos:
+  - nickname: String
+  - age: String
+  - gender: String
+  - type: String
+
+privateData: PUT {changePrivateData.user.service.js}
+- Métodos para actualizar los campos de datos privados:
+  - phonenumber: String
+
+publications: ADD & DELETE {[add/delete]Publication.user.service.js}
+- Métodos para agregar y eliminar publicaciones.
+
+sentRequests: ADD & DELETE {[add/delete]Request.user.service.js}
+- Métodos para agregar y eliminar solicitudes enviadas.
+
+matches: ADD & DELETE {[add/delete]Matches.user.service.js}
+- Métodos para agregar y eliminar coincidencias.
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+-----------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+-----------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+ESQUEMA PUBLICACION
+publicationId: Constante, identificador único de la publicación.
+createdBy: Usuario que creó la publicación.
+type: Tipo de publicación.
+publicationData: Método PUT para actualizar datos de la publicación (ubicación, sharedRoom, mixed, pets).
+requests: Métodos ADD & DELETE para manejar solicitudes de usuarios.
+matches: Métodos ADD & DELETE para manejar coincidencias.
+publicationState: Método PUT para cambiar el estado de la publicación.
+createdAt: Fecha de creación de la publicación.
+------------------------------------------------------------------------------------------------------
+Explicación y Comentarios:
+------------------------------------------------------------------------------------------------------
+publicationId: CONST
+- Identificador único de la publicación, constante y no modificable una vez creada.
+
+createdBy: String
+- Usuario que creó la publicación, almacenado como un string de referencia.
+
+type: String
+- Tipo de publicación (e.g., alquiler de habitación, alquiler de apartamento).
+
+publicationData: PUT {changePublicationData.publication.service.js}
+- Métodos para actualizar los campos de datos de la publicación:
+  - ubication: String
+  - sharedRoom: Boolean
+  - mixed: Boolean
+  - pets: Boolean
+
+requests: ADD & DELETE {[add/delete]Request.publication.service.js}
+- Métodos para agregar y eliminar solicitudes de usuarios:
+  - Lista de usuarios que han enviado solicitudes para esta publicación.
+
+matches: ADD & DELETE {[add/delete]Match.publication.service.js}
+- Métodos para agregar y eliminar coincidencias:
+  - Lista de usuarios que han hecho match con la publicación.
+
+publicationState: PUT {changeState.publication.service.js}
+- Métodos para cambiar el estado de la publicación:
+  - Estado de la publicación (e.g., activa, inactiva).
+
+createdAt: Date
+- Fecha y hora en que se creó la publicación, no modificable.
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+-----------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+-----------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////////////////////

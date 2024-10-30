@@ -1,0 +1,401 @@
+Lógica de los Controllers
+En una aplicación típica basada en Node.js y Express, los controladores (controllers) manejan las solicitudes HTTP entrantes, llaman a los servicios apropiados para la lógica de negocio y devuelven respuestas HTTP. Aquí te presento una estructura básica para los controladores basados en los servicios mencionados.
+
+Controllers de Usuario
+Registro de Usuario
+javascript
+Copiar código
+import { createUserService } from '../services/user/createUserService.js';
+
+export const registerUserController = async (req, res) => {
+    try {
+        const user = await createUserService(req.body);
+        res.status(201).json(user);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Inicio de Sesión
+javascript
+Copiar código
+import { loginUserService } from '../services/user/loginUserService.js';
+
+export const loginUserController = async (req, res) => {
+    try {
+        const user = await loginUserService(req.body.username, req.body.password);
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(401).json({ error: err.message });
+    }
+};
+Cambio de Contraseña
+javascript
+Copiar código
+import { changePasswordService } from '../services/user/changePasswordService.js';
+
+export const changePasswordController = async (req, res) => {
+    try {
+        const user = await changePasswordService(req.user.id, req.body.password);
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Cambio de Email
+javascript
+Copiar código
+import { changeEmailService } from '../services/user/changeEmailService.js';
+
+export const changeEmailController = async (req, res) => {
+    try {
+        const user = await changeEmailService(req.user.id, req.body.email);
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Obtener y Cambiar Datos Públicos y Privados
+javascript
+Copiar código
+import { getPublicDataService, changePublicDataService } from '../services/user/publicDataService.js';
+import { getPrivateDataService, changePrivateDataService } from '../services/user/privateDataService.js';
+
+export const getPublicDataController = async (req, res) => {
+    try {
+        const data = await getPublicDataService(req.user.id);
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const changePublicDataController = async (req, res) => {
+    try {
+        const data = await changePublicDataService(req.user.id, req.body);
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const getPrivateDataController = async (req, res) => {
+    try {
+        const data = await getPrivateDataService(req.user.id);
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const changePrivateDataController = async (req, res) => {
+    try {
+        const data = await changePrivateDataService(req.user.id, req.body);
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Agregar y Eliminar Publicación
+javascript
+Copiar código
+import { addUserPublicationService, deleteUserPublicationService } from '../services/user/publicationService.js';
+
+export const addUserPublicationController = async (req, res) => {
+    try {
+        const publication = await addUserPublicationService(req.user.id, req.body);
+        res.status(201).json(publication);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const deleteUserPublicationController = async (req, res) => {
+    try {
+        const publication = await deleteUserPublicationService(req.user.id, req.params.publicationId);
+        res.status(200).json(publication);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Agregar y Eliminar Solicitud y Match
+javascript
+Copiar código
+import { addUserRequestService, deleteUserRequestService } from '../services/user/requestService.js';
+import { addUserMatchService, deleteUserMatchService } from '../services/user/matchService.js';
+
+export const addUserRequestController = async (req, res) => {
+    try {
+        const request = await addUserRequestService(req.user.id, req.params.publicationId);
+        res.status(201).json(request);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const deleteUserRequestController = async (req, res) => {
+    try {
+        const request = await deleteUserRequestService(req.user.id, req.params.publicationId);
+        res.status(200).json(request);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const addUserMatchController = async (req, res) => {
+    try {
+        const match = await addUserMatchService(req.user.id, req.params.publicationId);
+        res.status(201).json(match);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const deleteUserMatchController = async (req, res) => {
+    try {
+        const match = await deleteUserMatchService(req.user.id, req.params.publicationId);
+        res.status(200).json(match);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Controllers de Publicación
+Crear Publicación
+javascript
+Copiar código
+import { createPublicationService } from '../services/publication/createPublicationService.js';
+
+export const createPublicationController = async (req, res) => {
+    try {
+        const publication = await createPublicationService(req.body);
+        res.status(201).json(publication);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Obtener y Cambiar Datos de Publicación
+javascript
+Copiar código
+import { getPublicationDataService, changePublicationDataService } from '../services/publication/publicationDataService.js';
+
+export const getPublicationDataController = async (req, res) => {
+    try {
+        const publication = await getPublicationDataService(req.params.publicationId);
+        res.status(200).json(publication);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const changePublicationDataController = async (req, res) => {
+    try {
+        const publication = await changePublicationDataService(req.params.publicationId, req.body);
+        res.status(200).json(publication);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Agregar y Eliminar Solicitud y Match
+javascript
+Copiar código
+import { addPublicationRequestService, deletePublicationRequestService } from '../services/publication/requestService.js';
+import { addPublicationMatchService, deletePublicationMatchService } from '../services/publication/matchService.js';
+
+export const addPublicationRequestController = async (req, res) => {
+    try {
+        const request = await addPublicationRequestService(req.params.publicationId, req.user.id);
+        res.status(201).json(request);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const deletePublicationRequestController = async (req, res) => {
+    try {
+        const request = await deletePublicationRequestService(req.params.publicationId, req.user.id);
+        res.status(200).json(request);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const addPublicationMatchController = async (req, res) => {
+    try {
+        const match = await addPublicationMatchService(req.params.publicationId, req.user.id);
+        res.status(201).json(match);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const deletePublicationMatchController = async (req, res) => {
+    try {
+        const match = await deletePublicationMatchService(req.params.publicationId, req.user.id);
+        res.status(200).json(match);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Cambiar Estado de la Publicación
+javascript
+Copiar código
+import { changePublicationStateService } from '../services/publication/changePublicationStateService.js';
+
+export const changePublicationStateController = async (req, res) => {
+    try {
+        const publication = await changePublicationStateService(req.params.publicationId, req.body.publicationState);
+        res.status(200).json(publication);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+Resumen
+Este esquema proporciona una estructura básica para los controladores de tu aplicación. Cada controlador maneja una solicitud HTTP, llama al servicio correspondiente, y envía una respuesta HTTP adecuada. Asegúrate de ajustar las rutas y middlewares de autenticación según las necesidades de tu aplicación.
+
+
+podrias  explicarlo como aca "Entendido! Aquí tienes un esquema general de cómo funcionaría la aplicación web basada en los esquemas de Usuario y Publicación. Vamos a organizarlo en secciones que describen los componentes principales y su interacción.
+
+Esquema General de Funcionamiento de la Aplicación Web
+1. Registro y Autenticación de Usuarios
+Flujo de Registro:...."
+ChatGPT
+Entendido. Aquí tienes un esquema general de cómo funcionaría la aplicación web basada en los esquemas de Usuario y Publicación, organizado en secciones que describen los componentes principales y su interacción.
+
+Esquema General de Funcionamiento de la Aplicación Web
+1. Registro y Autenticación de Usuarios
+Flujo de Registro:
+
+Controlador: registerUserController
+Recibe datos del usuario desde el cliente.
+Llama a createUserService para crear un nuevo usuario.
+Devuelve el usuario creado o un mensaje de error.
+Servicio: createUserService
+Valida los datos del usuario.
+Guarda el nuevo usuario en la base de datos (colección User).
+Flujo de Autenticación:
+
+Controlador: loginUserController
+Recibe las credenciales del usuario desde el cliente.
+Llama a loginUserService para autenticar al usuario.
+Devuelve los datos del usuario autenticado o un mensaje de error.
+Servicio: loginUserService
+Busca el usuario por nombre de usuario.
+Verifica la contraseña utilizando bcrypt.
+Devuelve los datos del usuario si la autenticación es exitosa.
+2. Gestión de Perfil de Usuario
+Cambio de Contraseña:
+
+Controlador: changePasswordController
+Recibe la nueva contraseña desde el cliente.
+Llama a changePasswordService para actualizar la contraseña.
+Devuelve el usuario actualizado o un mensaje de error.
+Servicio: changePasswordService
+Valida la nueva contraseña.
+Actualiza la contraseña en la base de datos (colección User).
+Cambio de Email:
+
+Controlador: changeEmailController
+Recibe el nuevo email desde el cliente.
+Llama a changeEmailService para actualizar el email.
+Devuelve el usuario actualizado o un mensaje de error.
+Servicio: changeEmailService
+Valida el nuevo email.
+Actualiza el email en la base de datos (colección User).
+Gestión de Datos Públicos y Privados:
+
+Controladores: getPublicDataController, changePublicDataController, getPrivateDataController, changePrivateDataController
+Gestionan las solicitudes para obtener y actualizar los datos públicos y privados del usuario.
+Servicios: getPublicDataService, changePublicDataService, getPrivateDataService, changePrivateDataService
+Interactúan con la base de datos para obtener y actualizar los datos públicos y privados del usuario.
+3. Gestión de Publicaciones
+Agregar Publicación:
+
+Controlador: addUserPublicationController
+Recibe los datos de la nueva publicación desde el cliente.
+Llama a addUserPublicationService para agregar la publicación al usuario.
+Devuelve la publicación agregada o un mensaje de error.
+Servicio: addUserPublicationService
+Valida y guarda la nueva publicación en la base de datos (colección User).
+Eliminar Publicación:
+
+Controlador: deleteUserPublicationController
+Recibe el ID de la publicación a eliminar desde el cliente.
+Llama a deleteUserPublicationService para eliminar la publicación del usuario.
+Devuelve la publicación eliminada o un mensaje de error.
+Servicio: deleteUserPublicationService
+Busca y elimina la publicación en la base de datos (colección User).
+4. Solicitudes y Matches de Publicaciones
+Agregar Solicitud:
+
+Controlador: addUserRequestController
+Recibe el ID de la publicación a la que se envía la solicitud.
+Llama a addUserRequestService para agregar la solicitud.
+Devuelve la solicitud agregada o un mensaje de error.
+Servicio: addUserRequestService
+Valida y guarda la solicitud en la base de datos (colección User).
+Eliminar Solicitud:
+
+Controlador: deleteUserRequestController
+Recibe el ID de la publicación de la que se elimina la solicitud.
+Llama a deleteUserRequestService para eliminar la solicitud.
+Devuelve la solicitud eliminada o un mensaje de error.
+Servicio: deleteUserRequestService
+Busca y elimina la solicitud en la base de datos (colección User).
+Agregar Match:
+
+Controlador: addUserMatchController
+Recibe el ID de la publicación para la cual se agrega un match.
+Llama a addUserMatchService para agregar el match.
+Devuelve el match agregado o un mensaje de error.
+Servicio: addUserMatchService
+Valida y guarda el match en la base de datos (colección User).
+Eliminar Match:
+
+Controlador: deleteUserMatchController
+Recibe el ID de la publicación de la cual se elimina el match.
+Llama a deleteUserMatchService para eliminar el match.
+Devuelve el match eliminado o un mensaje de error.
+Servicio: deleteUserMatchService
+Busca y elimina el match en la base de datos (colección User).
+Publicaciones
+Crear Publicación:
+
+Controlador: createPublicationController
+Recibe los datos de la nueva publicación desde el cliente.
+Llama a createPublicationService para crear una nueva publicación.
+Devuelve la publicación creada o un mensaje de error.
+Servicio: createPublicationService
+Valida y guarda la nueva publicación en la base de datos (colección Publication).
+Obtener y Cambiar Datos de Publicación:
+
+Controladores: getPublicationDataController, changePublicationDataController
+Gestionan las solicitudes para obtener y actualizar los datos de una publicación.
+Servicios: getPublicationDataService, changePublicationDataService
+Interactúan con la base de datos para obtener y actualizar los datos de la publicación.
+Agregar y Eliminar Solicitud en Publicación:
+
+Controladores: addPublicationRequestController, deletePublicationRequestController
+Gestionan las solicitudes para agregar y eliminar solicitudes en una publicación.
+Servicios: addPublicationRequestService, deletePublicationRequestService
+Interactúan con la base de datos para agregar y eliminar solicitudes en una publicación.
+Agregar y Eliminar Match en Publicación:
+
+Controladores: addPublicationMatchController, deletePublicationMatchController
+Gestionan las solicitudes para agregar y eliminar matches en una publicación.
+Servicios: addPublicationMatchService, deletePublicationMatchService
+Interactúan con la base de datos para agregar y eliminar matches en una publicación.
+Cambiar Estado de la Publicación:
+
+Controlador: changePublicationStateController
+Recibe el nuevo estado de la publicación desde el cliente.
+Llama a changePublicationStateService para actualizar el estado de la publicación.
+Devuelve la publicación actualizada o un mensaje de error.
+Servicio: changePublicationStateService
+Valida y actualiza el estado de la publicación en la base de datos (colección Publication).
+Resumen
+Este esquema proporciona una descripción detallada de cómo se manejan las diferentes funcionalidades de la aplicación web, organizadas en servicios y controladores. Cada servicio realiza operaciones específicas en la base de datos, y los controladores manejan las solicitudes HTTP, llamando a los servicios correspondientes y devolviendo las respuestas adecuadas. Asegúrate de implementar middleware de autenticación y autorización según sea necesario para proteger las rutas y funcionalidades de la aplicación.
+
+
+
+
+
+
